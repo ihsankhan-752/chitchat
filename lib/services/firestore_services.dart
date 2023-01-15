@@ -141,6 +141,7 @@ class fireStoreServices {
       "uid": FirebaseAuth.instance.currentUser!.uid,
       "storyImage": imageUrl,
       "text": story,
+      "userCheckedList": [],
       "createdAt": DateTime.now(),
       "username": snap['username'],
       "userImage": snap['image'],
@@ -159,5 +160,21 @@ class fireStoreServices {
       "userImage": data['image'],
       "createdAt": DateTime.now(),
     });
+  }
+
+  Future<void> likeAndDislikePost({BuildContext? context, dynamic data}) async {
+    try {
+      if (data['likes'].contains(FirebaseAuth.instance.currentUser!.uid)) {
+        await FirebaseFirestore.instance.collection("posts").doc(data['postId']).update({
+          "likes": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+        });
+      } else {
+        await FirebaseFirestore.instance.collection("posts").doc(data['postId']).update({
+          "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+        });
+      }
+    } on FirebaseException catch (e) {
+      showMessage(context!, e.message.toString());
+    }
   }
 }

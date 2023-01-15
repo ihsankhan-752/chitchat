@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_insta_clone/screens/auth/sign_up_screen.dart';
+import 'package:my_insta_clone/screens/auth/widgets/footer_and_google_sign_in.dart';
 
 import '../../services/auth_services.dart';
 import '../../utils/colors.dart';
 import '../../utils/custom_messanger.dart';
-import '../../utils/screen_navigations.dart';
 import '../../utils/text_styles.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/text_input.dart';
@@ -18,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isVisible = true;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool isLoading = false;
@@ -67,10 +66,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 hintText: "password",
                 prefixIcon: Icons.lock,
-                isTextSecure: true,
+                isTextSecure: isVisible,
                 suffixChild: IconButton(
-                  icon: Icon(Icons.visibility_off, color: Colors.grey),
-                  onPressed: () {},
+                  icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      isVisible = !isVisible;
+                    });
+                  },
                 ),
               ),
               SizedBox(height: 20),
@@ -104,45 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        AuthServices().signInWithGoogle(context);
-                      },
-                      child: SocialLoginButton(icon: FontAwesomeIcons.google, iconColor: Colors.red),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              InkWell(
-                highlightColor: AppColors.PRIMARY_BLACK,
-                onTap: () {
-                  navigateToNext(context, SignUpScreen());
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an Account?",
-                      style: AppTextStyle.BUTTON_TEXT_STYLE.copyWith(
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      " Sign Up",
-                      style: AppTextStyle.BUTTON_TEXT_STYLE.copyWith(
-                        fontSize: 12,
-                        color: AppColors.APP_CIRCULAR_RADIUS,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+              FooterAndGoogleSignUpWidget(),
             ],
           ),
         ),

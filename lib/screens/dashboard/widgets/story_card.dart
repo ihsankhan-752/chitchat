@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -93,6 +94,7 @@ class _StoryCardState extends State<StoryCard> {
                             Duration(days: 1),
                           ),
                         )
+                        .orderBy("createdAt", descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
@@ -111,19 +113,22 @@ class _StoryCardState extends State<StoryCard> {
                             margin: EdgeInsets.only(right: 10),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.red),
+                              border: data['userCheckedList'].contains(FirebaseAuth.instance.currentUser!.uid) ? null : Border.all(color: Colors.red),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
                               child: InkWell(
                                 highlightColor: Colors.transparent,
-                                onTap: () {
+                                onTap: () async {
                                   navigateToNext(
                                     context,
                                     StoryFullScreen(
                                       data: data,
                                     ),
                                   );
+                                  await FirebaseFirestore.instance.collection("stories").doc(data.id).update({
+                                    "userCheckedList": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+                                  });
                                 },
                                 child: CircleAvatar(
                                   radius: 30,

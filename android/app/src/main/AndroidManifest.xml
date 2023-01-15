@@ -2,7 +2,7 @@
     package="com.pixatronix.my_insta_clone">
 
    <application
-        android:label="my_insta_clone"
+        android:label="ChitChat"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

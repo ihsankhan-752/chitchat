@@ -43,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             searchController.text.isNotEmpty
                 ? DelayedDisplay(
-                    delay: Duration(milliseconds: 100),
+                    delay: Duration(milliseconds: 600),
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
                       height: MediaQuery.of(context).size.height * 0.6,

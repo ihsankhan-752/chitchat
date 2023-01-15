@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_insta_clone/screens/auth/sign_up_screen.dart';
 
 import '../../utils/colors.dart';
@@ -23,66 +22,31 @@ class FirstScreen extends StatelessWidget {
             SizedBox(height: 20),
             Text(
               "Let's You in",
-              style: AppTextStyle.MAIN_HEADING,
+              style: AppTextStyle.MAIN_HEADING.copyWith(color: AppColors.BTN_COLOR),
             ),
             SizedBox(height: 20),
             PrimaryButton(
+              onPressed: () {
+                navigateToNext(context, SignUpScreen());
+              },
               isIconReq: true,
-              title: "Continue With Facebook",
-              icon: FontAwesomeIcons.facebook,
+              title: "Register Yourself",
+              icon: Icons.login,
               iconColor: AppColors.SKY,
               btnColor: AppColors.PRIMARY_GREY,
             ),
             SizedBox(height: 20),
             PrimaryButton(
+              onPressed: () {
+                navigateToNext(context, LoginScreen());
+              },
               isIconReq: true,
-              title: "Continue With Google",
-              icon: FontAwesomeIcons.google,
+              title: "Login With Email",
+              icon: Icons.email,
               iconColor: Colors.red,
               btnColor: AppColors.PRIMARY_GREY,
             ),
             SizedBox(height: 20),
-            PrimaryButton(
-              isIconReq: true,
-              title: "Continue With Apple",
-              icon: FontAwesomeIcons.apple,
-              iconColor: AppColors.PRIMARY_WHITE,
-              btnColor: AppColors.PRIMARY_GREY,
-            ),
-            SizedBox(height: 30),
-            Center(child: Text("Or", style: AppTextStyle.BUTTON_TEXT_STYLE)),
-            SizedBox(height: 30),
-            PrimaryButton(
-              onPressed: () {
-                navigateToNext(context, LoginScreen());
-              },
-              title: "Sign in with Password",
-              btnColor: AppColors.BTN_COLOR,
-            ),
-            SizedBox(height: 30),
-            InkWell(
-              onTap: () {
-                navigateToNext(context, SignUpScreen());
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an Account?",
-                    style: AppTextStyle.BUTTON_TEXT_STYLE.copyWith(
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    " Sign Up",
-                    style: AppTextStyle.BUTTON_TEXT_STYLE.copyWith(
-                      fontSize: 12,
-                      color: AppColors.APP_CIRCULAR_RADIUS,
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

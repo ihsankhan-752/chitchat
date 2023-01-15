@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_insta_clone/screens/auth/widgets/image_picking_dialog_box.dart';
 
 import '../../services/auth_services.dart';
 import '../../utils/colors.dart';
@@ -20,6 +21,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool isVisible = true;
   bool isLoading = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -65,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         username: usernameController.text,
       );
       setState(() {
+        image = null;
         isLoading = false;
       });
       if (res == 'success') {
@@ -117,35 +120,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              showDialog(
+                              imagePickingDialogBox(
                                   context: context,
-                                  builder: (_) {
-                                    return SimpleDialog(
-                                      children: [
-                                        SimpleDialogOption(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            pickImage(ImageSource.camera);
-                                          },
-                                          child: Text("From Camera"),
-                                        ),
-                                        Divider(),
-                                        SimpleDialogOption(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            pickImage(ImageSource.gallery);
-                                          },
-                                          child: Text("From Gallery"),
-                                        ),
-                                        Divider(),
-                                        SimpleDialogOption(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("Cancel"),
-                                        ),
-                                      ],
-                                    );
+                                  cameraTapped: () {
+                                    Navigator.of(context).pop();
+                                    pickImage(ImageSource.camera);
+                                  },
+                                  galleryTapped: () {
+                                    Navigator.of(context).pop();
+                                    pickImage(ImageSource.gallery);
                                   });
                             },
                             child: Icon(Icons.image, color: AppColors.PRIMARY_WHITE, size: 20),
@@ -173,10 +156,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: passwordController,
                 hintText: "password",
                 prefixIcon: Icons.lock,
-                isTextSecure: true,
+                isTextSecure: isVisible,
                 suffixChild: IconButton(
-                  icon: Icon(Icons.visibility_off, color: Colors.grey),
-                  onPressed: () {},
+                  icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      isVisible = !isVisible;
+                    });
+                  },
                 ),
               ),
               SizedBox(height: 20),

@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(username);
     return Scaffold(
       appBar: AppBar(
         title: Text("Chit Chat",

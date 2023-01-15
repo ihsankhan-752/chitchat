@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_insta_clone/models/user_model.dart';
 import 'package:my_insta_clone/screens/dashboard/minor_screen/user_list_for_following_screen.dart';
+import 'package:my_insta_clone/screens/dashboard/widgets/profile_screen_post_card.dart';
 import 'package:my_insta_clone/screens/dashboard/widgets/user_profile_custom_card.dart';
-import 'package:my_insta_clone/services/auth_services.dart';
 import 'package:my_insta_clone/services/firestore_services.dart';
 import 'package:my_insta_clone/utils/colors.dart';
 import 'package:my_insta_clone/utils/screen_navigations.dart';
 import 'package:my_insta_clone/utils/text_styles.dart';
 import 'package:my_insta_clone/widgets/buttons.dart';
 
+import '../../services/auth_services.dart';
 import '../../utils/custom_messanger.dart';
 import 'minor_screen/chat_screen.dart';
 import 'minor_screen/list_of_followers_screen.dart';
@@ -137,7 +138,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               widget.uid == FirebaseAuth.instance.currentUser!.uid
                                   ? ProfileScreenMainButton(
                                       onPressed: () async {
-                                        await AuthServices().logOutUser(context);
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return CupertinoAlertDialog(
+                                                title: Text("Wait"),
+                                                content: Text("Do You Want to LogOut?"),
+                                                actions: [
+                                                  CupertinoActionSheetAction(
+                                                    onPressed: () {
+                                                      Navigator.of(context, rootNavigator: true).pop();
+                                                    },
+                                                    child: Text(
+                                                      "No",
+                                                      style: TextStyle(
+                                                        color: Colors.red[900],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  CupertinoActionSheetAction(
+                                                    onPressed: () async {
+                                                      Navigator.of(context, rootNavigator: true).pop();
+                                                      await AuthServices().logOutUser(context);
+                                                    },
+                                                    child: Text("Yes"),
+                                                  ),
+                                                ],
+                                              );
+                                            });
                                       },
                                       btnColor: AppColors.PRIMARY_GREY.withOpacity(0.3),
                                       borderColor: AppColors.PRIMARY_GREY,
@@ -194,41 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.55,
-                  width: double.infinity,
-                  child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("posts").where("uid", isEqualTo: widget.uid).snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.data!.docs.isEmpty) {
-                        return Center(
-                          child: Text(
-                            "No Post Available",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        );
-                      }
-                      return GridView.builder(
-                          itemCount: snapshot.data!.docs.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                          ),
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              child: Image.network(snapshot.data!.docs[index]['postImages'][0], fit: BoxFit.cover),
-                            );
-                          });
-                    },
-                  ),
-                )
+                ProfileScreenPostCard(uid: widget.uid!),
               ],
             ),
           );
